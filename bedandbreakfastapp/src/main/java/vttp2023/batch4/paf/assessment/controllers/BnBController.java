@@ -106,11 +106,13 @@ public class BnBController {
 
 			JsonObject empty = Json.createObjectBuilder().build();
 
-			return ResponseEntity.ok().body("{}");
+			return ResponseEntity.ok().body(empty.toString());
 		} catch(Exception e) {
+			System.out.println(e);
+			JsonObject error = Json.createObjectBuilder().add("message", e.getMessage()).build();
+			return ResponseEntity.internalServerError().body(error.toString());
 
 		}
-		return null;
 	}
 
 }

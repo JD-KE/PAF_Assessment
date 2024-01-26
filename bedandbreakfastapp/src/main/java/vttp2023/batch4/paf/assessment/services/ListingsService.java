@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import vttp2023.batch4.paf.assessment.Excecptions.SQLInsertionException;
 import vttp2023.batch4.paf.assessment.models.Accommodation;
 import vttp2023.batch4.paf.assessment.models.AccommodationSummary;
 import vttp2023.batch4.paf.assessment.models.Bookings;
@@ -61,7 +63,8 @@ public class ListingsService {
 	// TODO: Task 6 
 	// IMPORTANT: DO NOT MODIFY THE SIGNATURE OF THIS METHOD.
 	// You may only add annotations and throw exceptions to this method
-	public void createBooking(Bookings booking) {
+	@Transactional(rollbackFor = SQLInsertionException.class)
+	public void createBooking(Bookings booking) throws SQLInsertionException {
 		Optional<User> userOpt = bookingsRepo.userExists(booking.getEmail());
 		if (userOpt.isEmpty()) {
 			User user = new User(booking.getEmail(), booking.getName());
