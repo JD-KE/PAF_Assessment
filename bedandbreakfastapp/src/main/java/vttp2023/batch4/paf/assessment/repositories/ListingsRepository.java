@@ -71,6 +71,18 @@ public class ListingsRepository {
 	 * eg. db.bffs.find({ name: 'fred }) 
 	 *
 	 *
+	 * db.listings.find({
+    "address.suburb":{$regex:"avalon",$options:"i"},
+    price:{$lte:1000},
+    accommodates:{$gte:1},
+    min_nights:{$lte:1}
+},
+{
+    name:1,
+    accommodates:1,
+    price:1
+}
+).sort({price:-1});
 	 */
 	public List<AccommodationSummary> findListings(String suburb, int persons, int duration, float priceRange) {
 		Query query = new Query(Criteria.where("address.suburb").regex(suburb,"i").and("price").lte(priceRange).and("accommodates").gte(persons).and("min_nights").lte(duration)).with(Sort.by(Direction.DESC,"price"));
