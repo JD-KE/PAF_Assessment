@@ -1,5 +1,6 @@
 package vttp2023.batch4.paf.assessment.controllers;
 
+import java.io.StringReader;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,7 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
 import vttp2023.batch4.paf.assessment.models.Accommodation;
+import vttp2023.batch4.paf.assessment.models.Bookings;
 import vttp2023.batch4.paf.assessment.services.ListingsService;
 import vttp2023.batch4.paf.assessment.Utils;
 
@@ -85,5 +90,27 @@ public class BnBController {
 	}
 
 	// TODO: Task 6
+	@PostMapping(path = "/accommodation", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public ResponseEntity<String> createBooking(@RequestBody String payload) {
+		System.out.println(payload);
+		JsonObject bookingDetails = Json.createReader(new StringReader(payload)).readObject();
+		Bookings booking = new Bookings();
+		booking.setListingId(bookingDetails.getString("id"));
+		booking.setName(bookingDetails.getString("name"));
+		booking.setEmail(bookingDetails.getString("email"));
+		booking.setDuration(bookingDetails.getInt("nights"));
+
+		try {
+			listingsSvc.createBooking(booking);
+
+			JsonObject empty = Json.createObjectBuilder().build();
+
+			return ResponseEntity.ok().body("{}");
+		} catch(Exception e) {
+
+		}
+		return null;
+	}
 
 }

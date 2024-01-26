@@ -17,6 +17,8 @@ public class BookingsRepository {
 
 	public static final String SQL_SELECT_USER_BY_EMAIL = "select * from users where email like %";
 
+	public static final String SQL_INSERT_USER = "insert into users(email,name) values (%, %)";
+
 	@Autowired
 	private JdbcTemplate template;
 
@@ -33,6 +35,9 @@ public class BookingsRepository {
 	// IMPORTANT: DO NOT MODIFY THE SIGNATURE OF THIS METHOD.
 	// You may only add throw exceptions to this method
 	public void newUser(User user) {
+		int rowsUpdated = template.update(SQL_INSERT_USER, user.email(),user.name());
+		System.out.printf("User %s updated - %b\n,",user.name(),rowsUpdated >0);
+		if(rowsUpdated <= 0);
 	}
 
 	// TODO: Task 6
